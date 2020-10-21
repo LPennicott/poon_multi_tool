@@ -13,10 +13,12 @@ DEBUG = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ciba',
+        'NAME': 'postgres',
     }
 }
 
 ALLOWED_HOSTS = ['*']
+
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 django_heroku.settings(locals())

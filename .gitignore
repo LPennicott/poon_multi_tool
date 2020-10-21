@@ -4,3 +4,4 @@ Include/
 db.sqlite3
 __pycache__
 new_file.xml
+*.pyc
