@@ -1,0 +1,18 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Homepage!</h1>
+    {% if user.is_authenticated %}
+        <p class="lead">Hello {{ user.username }}!</p>
+        <hr class="my-4">
+        <p>Welcome the Multi-Tool! Here you'll find various useful tools (added as requested).</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'csv' %}" role="button">Process Files</a>
+    {% else %}
+        <p class="lead">Hello Stranger</p>
+        <hr class="my-4">
+        <p>Please Login</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Log In</a>
+    {% endif %}
+</div>
+{% endblock content %}

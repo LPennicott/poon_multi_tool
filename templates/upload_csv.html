@@ -1,0 +1,45 @@
+{% extends '_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Hello! CSV
+{% endblock title %}
+
+{% block content %}
+    <div class="jumbotron shadow rounded">
+      <div class="container">
+        <h1 class="display-4">Process Files!</h1>
+        <p class="lead">Upload a csv file and an xml file. Received a modified xml file containing only the requested hawbs.</p>
+      </div>
+    </div>
+    <br>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="card">
+              <div class="card-body bg-danger">
+                  <h3>{{ message }} !</h3>
+              </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow rounded">
+      <div class="card-header">
+        Processing Form
+      </div>
+      <div class="card-body">
+        <form action="{% url 'csv' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.errors }}
+                    {{ field|as_crispy_field }}
+                </div>
+            {% endfor %}
+            <input class="btn btn-primary btn-lg" type="submit" value="Upload Files">
+        </form>
+      </div>
+    </div>
+
+{% endblock content %}
