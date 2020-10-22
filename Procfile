@@ -1,1 +1,1 @@
-web: gunicorn seko.wsgi --log-file -
+web: gunicorn multi-tool.wsgi --log-file -
