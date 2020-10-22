@@ -1,1 +1,1 @@
-web: gunicorn multi-tool.wsgi --log-file -
+web: gunicorn multi_tool.wsgi --log-file -
