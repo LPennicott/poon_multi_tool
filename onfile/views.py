@@ -10,6 +10,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from .forms import UploadFilesForm
+from .helper import _process_file
 
 
 # Create your views here.
@@ -30,38 +31,17 @@ def process_csv(request):
             if request.FILES['csv_file'].name.endswith('.csv') and \
                     request.FILES['xml_file'].name.endswith('.xml'):
                 csv_file = request.FILES['csv_file'].read().decode('UTF-8')
+                xml_file = request.FILES['xml_file']
                 io_string = io.StringIO(csv_file)
                 reader = csv.DictReader(io_string)
 
-                for fieldname in reader.fieldnames:
-                    if result := re.match('hawb(s*)', fieldname, re.IGNORECASE):
-                        name = result.group(0)
-
-                        # collect hawbs to compare against hawb nodes in xml
-                        # file
-                        hawbs = {str(row[name]) for row in reader}
-                        new_hawbs = []
-                        for hawb in hawbs:
-                            while len(hawb) < 11:
-                                hawb = '0' + hawb
-                            new_hawbs.append(hawb)
-
-                xml_file = request.FILES['xml_file']
-                parsed_xml = ET.parse(xml_file)
-                parsed_xml_root = parsed_xml.getroot()
-                parsed_list = parsed_xml_root.findall("ENTRY")
-
-                for item in parsed_list:
-                    if item.find("MANIFEST").find(
-                            "HOUSE").text not in new_hawbs:
-                        parsed_xml_root.remove(item)
-
-                parsed_xml.write('new_file.xml', xml_declaration=True)
+                processed_file = _process_file(reader, xml_file)
+                
                 with open('new_file.xml', 'rb') as f:
                     response = HttpResponse(f, content_type='text/xml')
                     response[
                         'Content-Disposition'] = 'attachment; filename = ' \
-                                                 '"new_file.xml"'
+                                                    '"new_file.xml"'
                 return response
             else:
                 messages.warning(request, 'Please use correct files')
